@@ -7,6 +7,17 @@ export {
 } from './TelegramThemeBuilder';
 
 export {
+  ThemeValidator,
+  type ValidationResult as AdvancedValidationResult,
+  type ValidationIssue,
+  type ValidationRule,
+  type ValidatorOptions,
+  type ValidationSummary,
+  type ValidationSeverity,
+  type ValidationErrorCode,
+} from './ThemeValidator';
+
+export {
   type ThemeColors,
   type ThemeProperty,
   type ThemeCategory,

@@ -1,10 +1,10 @@
 import {
-  THEME_PROPERTIES,
-  REQUIRED_PROPERTIES,
   DEFAULT_LIGHT_THEME,
   DEFAULT_DARK_THEME,
 } from './templates/base-theme';
 import type { ThemeColors } from './templates/base-theme';
+import { ThemeValidator } from './ThemeValidator';
+import type { ValidationResult as AdvancedValidationResult, ValidatorOptions } from './ThemeValidator';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -12,8 +12,14 @@ export interface ThemeBuilderOptions {
   mode?: ThemeMode;
   name?: string;
   author?: string;
+  /** Options passed to the internal ThemeValidator */
+  validatorOptions?: ValidatorOptions;
 }
 
+/**
+ * Simple validation result for backward compatibility.
+ * For advanced validation, use ThemeValidator directly.
+ */
 export interface ValidationResult {
   valid: boolean;
   errors: string[];
@@ -26,6 +32,8 @@ export interface GeneratedTheme {
   content: string;
   properties: Record<string, string>;
   validation: ValidationResult;
+  /** Advanced validation result with detailed issues */
+  advancedValidation?: AdvancedValidationResult;
 }
 
 /**
@@ -33,8 +41,9 @@ export interface GeneratedTheme {
  * to Telegram Desktop theme properties and generating valid .tdesktop-theme files.
  */
 export class TelegramThemeBuilder {
-  private options: Required<ThemeBuilderOptions>;
+  private options: Required<Omit<ThemeBuilderOptions, 'validatorOptions'>>;
   private baseTheme: Record<string, string>;
+  private validator: ThemeValidator;
 
   constructor(options: ThemeBuilderOptions = {}) {
     this.options = {
@@ -45,6 +54,8 @@ export class TelegramThemeBuilder {
 
     this.baseTheme =
       this.options.mode === 'dark' ? { ...DEFAULT_DARK_THEME } : { ...DEFAULT_LIGHT_THEME };
+
+    this.validator = new ThemeValidator(options.validatorOptions);
   }
 
   /**
@@ -66,13 +77,15 @@ export class TelegramThemeBuilder {
     const content = this.generateThemeContent(finalProperties);
 
     // Validate the theme
-    const validation = this.validateTheme(finalProperties);
+    const advancedValidation = this.validator.validate(finalProperties);
+    const validation = this.convertToSimpleValidation(advancedValidation);
 
     return {
       name: this.options.name,
       content,
       properties: finalProperties,
       validation,
+      advancedValidation,
     };
   }
 
@@ -429,31 +442,33 @@ export class TelegramThemeBuilder {
 
   /**
    * Validates the generated theme properties.
+   * Uses the internal ThemeValidator for comprehensive validation.
    */
   validateTheme(properties: Record<string, string>): ValidationResult {
+    const advancedResult = this.validator.validate(properties);
+    return this.convertToSimpleValidation(advancedResult);
+  }
+
+  /**
+   * Converts advanced validation result to simple format for backward compatibility.
+   */
+  private convertToSimpleValidation(advanced: AdvancedValidationResult): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
     const missingProperties: string[] = [];
 
-    // Check required properties
-    for (const required of REQUIRED_PROPERTIES) {
-      if (!properties[required]) {
-        missingProperties.push(required);
-        errors.push(`Missing required property: ${required}`);
-      }
-    }
+    for (const issue of advanced.issues) {
+      const message = issue.property
+        ? `${issue.message} (${issue.property})`
+        : issue.message;
 
-    // Check all known properties
-    for (const prop of THEME_PROPERTIES) {
-      if (!properties[prop.key]) {
-        warnings.push(`Missing property: ${prop.key} (${prop.description})`);
-      }
-    }
-
-    // Validate color formats
-    for (const [key, value] of Object.entries(properties)) {
-      if (!this.isValidColorFormat(value)) {
-        errors.push(`Invalid color format for ${key}: ${value}`);
+      if (issue.severity === 'error') {
+        errors.push(message);
+        if (issue.message.includes('Missing required')) {
+          missingProperties.push(issue.property || '');
+        }
+      } else {
+        warnings.push(message);
       }
     }
 
@@ -463,6 +478,13 @@ export class TelegramThemeBuilder {
       warnings,
       missingProperties,
     };
+  }
+
+  /**
+   * Returns the internal ThemeValidator for advanced validation features.
+   */
+  getValidator(): ThemeValidator {
+    return this.validator;
   }
 
   /**
