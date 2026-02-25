@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+[![CI](https://github.com/Hypovolemic/telegram-theme-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/telegram-theme-generator/actions/workflows/ci.yml)
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
