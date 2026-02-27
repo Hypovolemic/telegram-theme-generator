@@ -239,27 +239,29 @@ export function ChatBubble({
     <div
       data-testid="chat-bubble"
       data-direction={message.direction}
-      className={`flex ${isOutgoing ? 'justify-end' : 'justify-start'} mb-0.5 ${className}`}
-      style={{ padding: '1px 8px' }}
+      className={`flex ${isOutgoing ? 'justify-end' : 'justify-start'} mb-1 ${className}`}
+      style={{ padding: '0 12px' }}
     >
       <div
         className="relative"
         style={{
-          maxWidth: '65%',
+          maxWidth: '70%',
           minWidth: '80px',
         }}
       >
         {/* The bubble */}
         <div
           data-testid="bubble-content"
-          className="relative px-2.5 py-1.5 rounded-lg"
+          className="relative px-3 py-2 rounded-lg"
           style={{
             backgroundColor: styles.background,
             color: styles.color,
             borderRadius: isOutgoing 
-              ? '10px 10px 0 10px' 
-              : '10px 10px 10px 0',
-            boxShadow: '0 1px 1px rgba(0,0,0,0.08)',
+              ? '12px 12px 0 12px' 
+              : '12px 12px 12px 0',
+            boxShadow: `0 1px 2px ${styles.shadowColor}`,
+            marginLeft: isOutgoing ? '0' : '6px',
+            marginRight: isOutgoing ? '6px' : '0',
           }}
         >
           {/* Sender name for group chats */}
@@ -272,7 +274,6 @@ export function ChatBubble({
               {message.senderName}
             </div>
           )}
-          
           {/* Reply preview */}
           {message.replyTo && (
             <ReplyPreview
@@ -282,7 +283,6 @@ export function ChatBubble({
               textColor={styles.color}
             />
           )}
-          
           {/* Message text with inline timestamp (Telegram style) */}
           <div className="text-[13px] leading-[18px] whitespace-pre-wrap break-words">
             <span>{message.text}</span>
@@ -295,7 +295,6 @@ export function ChatBubble({
               }} 
             />
           </div>
-          
           {/* Timestamp + read status - positioned at bottom-right, overlapping the spacer */}
           <div 
             className="flex items-center justify-end"
@@ -316,7 +315,6 @@ export function ChatBubble({
             >
               {formatTime(message.timestamp)}
             </span>
-            
             {isOutgoing && message.readStatus && (
               <ReadStatusIcon
                 status={message.readStatus}
@@ -325,21 +323,20 @@ export function ChatBubble({
             )}
           </div>
         </div>
-        
         {/* Bubble tail - small triangle at bottom corner */}
         <div 
           style={{
             position: 'absolute',
             bottom: 0,
-            [isOutgoing ? 'right' : 'left']: '-6px',
+            [isOutgoing ? 'right' : 'left']: '-7px',
             width: 0,
             height: 0,
             borderStyle: 'solid',
             ...(isOutgoing ? {
-              borderWidth: '0 0 8px 8px',
+              borderWidth: '0 0 10px 10px',
               borderColor: `transparent transparent transparent ${hexToCSS(tailColor)}`,
             } : {
-              borderWidth: '0 8px 8px 0',
+              borderWidth: '0 10px 10px 0',
               borderColor: `transparent ${hexToCSS(tailColor)} transparent transparent`,
             }),
           }}

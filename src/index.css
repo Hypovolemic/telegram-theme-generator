@@ -4,7 +4,7 @@
 
 /* Gradient title text - reliable cross-browser approach */
 .gradient-title {
-  background: linear-gradient(to right, #2563eb, #9333ea);
+  background: linear-gradient(to right, #4fa8a8, #c0675c);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
