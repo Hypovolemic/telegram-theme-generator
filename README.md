@@ -1,6 +1,7 @@
-# React + TypeScript + Vite
+# Telegram Theme Generator
 
-[![CI](https://github.com/Hypovolemic/telegram-theme-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/telegram-theme-generator/actions/workflows/ci.yml)
+[![CI](https://github.com/Hypovolemic/telegram-theme-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/Hypovolemic/telegram-theme-generator/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Hypovolemic/telegram-theme-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/Hypovolemic/telegram-theme-generator)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
