@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, type DragEvent, type ChangeEvent } from 'react';
 import {
   ACCEPTED_IMAGE_TYPES,
-  ACCEPTED_EXTENSIONS,
   MAX_FILE_SIZE,
   ERROR_MESSAGES,
   type ImageUploaderProps,
@@ -376,7 +375,7 @@ export function ImageUploader({
               )}
             </p>
             <p className="mt-1 text-xs text-gray-500">
-              {ACCEPTED_EXTENSIONS.join(', ').toUpperCase()} up to {formatFileSize(maxFileSize)}
+              .JPG, .JPEG, .PNG, .WEBP up to {formatFileSize(maxFileSize)}
             </p>
           </div>
         )}

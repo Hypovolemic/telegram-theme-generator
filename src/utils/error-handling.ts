@@ -99,10 +99,10 @@ export function getUserFriendlyMessage(code: ErrorCode): string {
     [ErrorCode.FILE_UPLOAD_CANCELLED]: 'File upload was cancelled.',
     
     // Color extraction errors
-    [ErrorCode.COLOR_EXTRACTION_FAILED]: 'Unable to extract colors from the image. Please try a different image.',
+    [ErrorCode.COLOR_EXTRACTION_FAILED]: 'Unable to extract colours from the image. Please try a different image.',
     [ErrorCode.IMAGE_LOAD_ERROR]: 'Unable to load the image. The file may be corrupted.',
     [ErrorCode.CANVAS_ERROR]: 'Unable to process the image. Your browser may not support this feature.',
-    [ErrorCode.INSUFFICIENT_COLORS]: 'The image doesn\'t have enough colors. Please try a more colorful image.',
+    [ErrorCode.INSUFFICIENT_COLORS]: 'The image doesn\'t have enough colours. Please try a more colourful image.',
     
     // Theme generation errors
     [ErrorCode.THEME_GENERATION_FAILED]: 'Unable to generate the theme. Please try again.',

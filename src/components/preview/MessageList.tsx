@@ -121,6 +121,7 @@ export function MessageList({
   theme,
   isGroupChat = false,
   className = '',
+  wallpaperUrl,
 }: MessageListProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -144,6 +145,26 @@ export function MessageList({
     '--scroll-bar-bg': hexToCSS(theme.scrollBarBg),
     '--scroll-bar-bg-over': hexToCSS(theme.scrollBarBgOver),
   }), [theme]);
+
+  // Background styles including wallpaper
+  const backgroundStyles = useMemo(() => {
+    const baseStyles: React.CSSProperties = {
+      backgroundColor: hexToCSS(theme.windowBg),
+      ...scrollbarStyles as React.CSSProperties,
+    };
+    
+    if (wallpaperUrl) {
+      return {
+        ...baseStyles,
+        backgroundImage: `url(${wallpaperUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      };
+    }
+    
+    return baseStyles;
+  }, [theme.windowBg, scrollbarStyles, wallpaperUrl]);
   
   return (
     <div
@@ -154,10 +175,7 @@ export function MessageList({
         scrollbar-thin scrollbar-thumb-rounded
         ${className}
       `}
-      style={{
-        backgroundColor: hexToCSS(theme.windowBg),
-        ...scrollbarStyles as React.CSSProperties,
-      }}
+      style={backgroundStyles}
     >
       {Array.from(messageGroups.entries()).map(([dateKey, dayMessages]) => (
         <div key={dateKey} data-testid="message-group">

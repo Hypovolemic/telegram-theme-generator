@@ -16,7 +16,7 @@ const sampleMessages: Message[] = [
   },
   {
     id: '2',
-    text: 'Wow, it looks amazing! Love the colors',
+    text: 'Wow, it looks amazing! Love the colours',
     direction: 'outgoing',
     timestamp: new Date(Date.now() - 3500000),
     readStatus: 'read',
@@ -29,7 +29,7 @@ const sampleMessages: Message[] = [
     senderName: 'Alex',
     replyTo: {
       senderName: 'You',
-      text: 'Wow, it looks amazing! Love the colors',
+      text: 'Wow, it looks amazing! Love the colours',
     },
   },
   {
@@ -495,6 +495,7 @@ export function ThemePreview({
   className = '',
   showSidebar = true,
   responsive = true,
+  wallpaperUrl,
 }: ThemePreviewProps) {
   const [selectedChat, setSelectedChat] = useState<string>('1');
   const [showTyping, setShowTyping] = useState(false);
@@ -570,6 +571,7 @@ export function ThemePreview({
             messages={sampleMessages}
             theme={theme}
             isGroupChat={false}
+            wallpaperUrl={wallpaperUrl}
           />
           
           {/* Typing indicator */}

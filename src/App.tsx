@@ -95,8 +95,8 @@ function ProcessingStatus() {
     },
     {
       id: 'extract',
-      label: 'Extract Colors',
-      description: 'Analyzing dominant colors',
+      label: 'Extract Colours',
+      description: 'Analyzing dominant colours',
       status: stage === 'extracting' ? 'active' : 
               stage === 'upload' ? 'pending' : 'completed',
     },
@@ -134,51 +134,56 @@ function ProcessingStatus() {
  * Displays privacy information near the upload area with tooltip explanation
  */
 function PrivacyNotice() {
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const { openPrivacyModal } = usePrivacyModal();
   
   return (
-    <div className="relative flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-3 mt-4 pt-4 border-t border-gray-100">
       <div 
-        className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg cursor-help"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onFocus={() => setShowTooltip(true)}
-        onBlur={() => setShowTooltip(false)}
+        className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg cursor-pointer select-none hover:bg-green-100 transition-colors"
+        onClick={() => setShowDetails(!showDetails)}
         tabIndex={0}
         role="button"
-        aria-describedby="privacy-tooltip"
+        aria-expanded={showDetails}
+        aria-label="Toggle privacy details"
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowDetails(!showDetails); } }}
       >
-        <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <svg width="16" height="16" className="text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" style={{ width: '16px', height: '16px', minWidth: '16px', minHeight: '16px' }}>
           <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
         </svg>
         <span className="text-sm text-green-700 font-medium">
           100% Private – Images never leave your device
         </span>
-        <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+        <svg 
+          width="14" height="14" 
+          className={`text-green-500 flex-shrink-0 transition-transform duration-200 ${showDetails ? 'rotate-180' : ''}`} 
+          fill="currentColor" viewBox="0 0 20 20" 
+          style={{ width: '14px', height: '14px', minWidth: '14px', minHeight: '14px' }}
+        >
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
         </svg>
       </div>
       
-      {/* Tooltip */}
-      {showTooltip && (
-        <div 
-          id="privacy-tooltip"
-          role="tooltip"
-          className="absolute top-full mt-2 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-10"
-        >
-          <p className="font-medium mb-1">Client-Side Processing</p>
-          <p className="text-gray-300 leading-relaxed">
+      {/* Expandable Details Section */}
+      {showDetails && (
+        <div className="w-full max-w-md p-4 bg-gray-50 border border-gray-200 rounded-lg text-left animate-in">
+          <p className="font-medium text-gray-800 text-sm mb-2">Client-Side Processing</p>
+          <p className="text-gray-600 text-xs leading-relaxed">
             All image analysis and theme generation happens directly in your browser using JavaScript. 
             Your images are never uploaded to any server – they stay completely on your device.
           </p>
-          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900 rotate-45" />
         </div>
       )}
       
       <button 
-        onClick={openPrivacyModal}
-        className="text-xs text-green-600 hover:text-green-700 hover:underline transition-colors"
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openPrivacyModal();
+        }}
+        className="text-xs text-green-600 hover:text-green-700 hover:underline transition-colors cursor-pointer bg-transparent border-none p-0 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
+        aria-label="Learn more about our privacy commitment"
       >
         Learn more about our privacy commitment →
       </button>
@@ -205,7 +210,7 @@ function MainContent() {
   
   const handleImageUpload = useCallback((file: File, previewUrl: string) => {
     uploadImage(file, previewUrl);
-    toast.info('Extracting colors from your image...', { title: 'Processing Image', duration: 3000 });
+    toast.info('Extracting colours from your image...', { title: 'Processing Image', duration: 3000 });
   }, [uploadImage, toast]);
   
   const handleDownloadSuccess = useCallback(() => {
@@ -250,12 +255,16 @@ function MainContent() {
         />
         
         {/* Supported formats */}
-        <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-gray-400">
+        <div className="flex flex-wrap items-center justify-center text-xs text-gray-400" style={{ gap: '8px' }}>
           <span>Supports:</span>
-          <span className="px-2 py-0.5 bg-gray-100 rounded">JPG</span>
-          <span className="px-2 py-0.5 bg-gray-100 rounded">PNG</span>
-          <span className="px-2 py-0.5 bg-gray-100 rounded">WebP</span>
-          <span className="text-gray-300">•</span>
+          <div className="flex items-center" style={{ gap: '6px' }}>
+            <span className="px-2 py-0.5 bg-gray-100 rounded">JPG</span>
+            <span className="text-gray-300">/</span>
+            <span className="px-2 py-0.5 bg-gray-100 rounded">PNG</span>
+            <span className="text-gray-300">/</span>
+            <span className="px-2 py-0.5 bg-gray-100 rounded">WebP</span>
+          </div>
+          <span className="text-gray-300">&bull;</span>
           <span>Max 10MB</span>
         </div>
         
@@ -271,7 +280,7 @@ function MainContent() {
       <div className="flex flex-col items-center justify-center py-8 sm:py-12">
         <Spinner size="large" className="mb-4" />
         <p className="text-gray-600 text-center">
-          {stage === 'extracting' ? 'Extracting colors from your image...' : 'Generating your theme...'}
+          {stage === 'extracting' ? 'Extracting colours from your image...' : 'Generating your theme...'}
         </p>
         {imagePreviewUrl && (
           <img
@@ -331,6 +340,7 @@ function MainContent() {
             theme={previewColors}
             showSidebar={true}
             responsive={true}
+            wallpaperUrl={imagePreviewUrl || undefined}
           />
         </div>
         
@@ -402,8 +412,8 @@ function HeroSection() {
         />
         <FeatureCard
           icon="🎨"
-          title="Smart Colors"
-          description="AI extracts the perfect color palette"
+          title="Smart Colours"
+          description="Algorithms extract the perfect colour palette"
         />
         <FeatureCard
           icon="📱"
@@ -432,7 +442,7 @@ function AppHeader() {
           <span className="text-2xl md:text-3xl">🎨</span>
         </div>
         <div className="text-left">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-title">
             Telegram Theme Generator
           </h1>
           <p className="text-xs md:text-sm text-gray-500 hidden sm:block">
@@ -459,7 +469,7 @@ function AppFooter() {
         {/* Privacy Badge */}
         <div className="flex items-center justify-center gap-2 mb-4">
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20" style={{ width: '14px', height: '14px', minWidth: '14px', minHeight: '14px' }}>
               <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
             </svg>
             100% Private - All processing happens locally
@@ -467,19 +477,19 @@ function AppFooter() {
         </div>
         
         {/* Links */}
-        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-500">
+        <div className="flex flex-wrap items-center justify-center text-sm text-gray-500" style={{ gap: '12px' }}>
           <a 
             href="https://github.com/Hypovolemic/telegram-theme-generator"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-700 transition-colors inline-flex items-center gap-1.5"
           >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style={{ width: '16px', height: '16px', minWidth: '16px', minHeight: '16px' }}>
               <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
             </svg>
             GitHub
           </a>
-          <span className="text-gray-300 hidden sm:inline">•</span>
+          <span className="text-gray-300">&bull;</span>
           <a 
             href="https://telegram.org"
             target="_blank"
@@ -488,7 +498,7 @@ function AppFooter() {
           >
             Telegram
           </a>
-          <span className="text-gray-300 hidden sm:inline">•</span>
+          <span className="text-gray-300">&bull;</span>
           <span className="text-gray-400">
             Made with ❤️ for Telegram users
           </span>

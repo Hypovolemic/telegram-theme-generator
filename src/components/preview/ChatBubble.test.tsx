@@ -62,13 +62,13 @@ describe('ChatBubble', () => {
   describe('theming', () => {
     it('should apply incoming message background color', () => {
       render(<ChatBubble message={createMessage({ direction: 'incoming' })} theme={theme} />);
-      const bubble = screen.getByTestId('chat-bubble').querySelector('div');
+      const bubble = screen.getByTestId('bubble-content');
       expect(bubble).toHaveStyle({ backgroundColor: '#ffffff' });
     });
     
     it('should apply outgoing message background color', () => {
       render(<ChatBubble message={createMessage({ direction: 'outgoing' })} theme={theme} />);
-      const bubble = screen.getByTestId('chat-bubble').querySelector('div');
+      const bubble = screen.getByTestId('bubble-content');
       expect(bubble).toHaveStyle({ backgroundColor: '#efffde' });
     });
   });
@@ -204,7 +204,9 @@ describe('ChatBubble', () => {
         />
       );
       const text = screen.getByText(/Line 1/);
-      expect(text).toHaveClass('whitespace-pre-wrap');
+      // Text is inside a span, check parent div for whitespace class
+      const textContainer = text.closest('div');
+      expect(textContainer).toHaveClass('whitespace-pre-wrap');
     });
     
     it('should break long words', () => {
@@ -215,7 +217,9 @@ describe('ChatBubble', () => {
         />
       );
       const text = screen.getByText('Hello, world!');
-      expect(text).toHaveClass('break-words');
+      // Text is inside a span, check parent div for break-words class
+      const textContainer = text.closest('div');
+      expect(textContainer).toHaveClass('break-words');
     });
   });
 });
