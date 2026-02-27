@@ -3,74 +3,91 @@
 [![CI](https://github.com/Hypovolemic/telegram-theme-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/Hypovolemic/telegram-theme-generator/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/Hypovolemic/telegram-theme-generator/branch/main/graph/badge.svg)](https://codecov.io/gh/Hypovolemic/telegram-theme-generator)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Generate custom Telegram themes from any image. Upload a photo, wallpaper, or artwork, and get a perfectly color-matched `.attheme` file for Telegram Android.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **🎨 Automatic Color Extraction** - Extracts dominant colors from your images
+- **☀️ Light & Dark Modes** - Generate themes for both light and dark preferences
+- **👁️ Live Preview** - See how your theme looks before downloading
+- **✨ Contrast Optimization** - Ensures readable text with proper contrast ratios
+- **📱 One-Click Download** - Export ready-to-use `.attheme` files
 
-## React Compiler
+## Privacy & Security
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**🔒 100% Private - Your images never leave your device.**
 
-## Expanding the ESLint configuration
+This application uses **client-side processing** exclusively:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ✅ **No Server Uploads** - All image processing happens in your browser
+- ✅ **No Data Collection** - We don't collect, store, or transmit any user data
+- ✅ **No Cookies** - No tracking cookies or analytics
+- ✅ **No External Requests** - Your images stay on your device at all times
+- ✅ **Open Source** - Verify our privacy claims by reviewing the [source code](https://github.com/Hypovolemic/telegram-theme-generator)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### How It Works
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. You select an image from your device
+2. The image loads into your browser's memory (not uploaded anywhere)
+3. JavaScript analyzes the image pixels using the HTML5 Canvas API
+4. A theme file is generated locally and downloaded directly to your device
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+No internet connection is required after the initial page load.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Hypovolemic/telegram-theme-generator.git
+cd telegram-theme-generator
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run test` | Run tests |
+| `npm run test:coverage` | Run tests with coverage |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format code with Prettier |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Tech Stack
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Vitest** - Testing
+
+## Usage
+
+1. Visit the application
+2. Upload an image (JPG, PNG, or WebP up to 10MB)
+3. Wait for color extraction and theme generation
+4. Toggle between light/dark mode to preview both versions
+5. Click "Download Theme" to get your `.attheme` file
+6. Import the theme in Telegram Android → Settings → Chat Settings → Change Chat Background → Pick Color → three-dot menu → Import theme
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
