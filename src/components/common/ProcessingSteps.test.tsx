@@ -193,7 +193,7 @@ describe('ProcessingSteps', () => {
 describe('useProcessingSteps', () => {
   const initialSteps = [
     { id: 'upload', label: 'Upload Image' },
-    { id: 'extract', label: 'Extract Colors' },
+    { id: 'extract', label: 'Extract Colours' },
     { id: 'generate', label: 'Generate Theme' },
   ];
   

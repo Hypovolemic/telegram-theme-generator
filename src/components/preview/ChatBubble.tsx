@@ -4,6 +4,7 @@ import { hexToCSS } from './types';
 
 /**
  * Formats a timestamp for display in a chat bubble
+ * Uses 12-hour format like Telegram
  */
 function formatTime(date: Date): string {
   return date.toLocaleTimeString('en-US', {
@@ -14,17 +15,17 @@ function formatTime(date: Date): string {
 }
 
 /**
- * Read status indicator icons
+ * Read status indicator icons - double check marks like Telegram
  */
 function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }) {
   const iconStyle = { 
     color: hexToCSS(color),
-    width: '14px',
-    height: '14px',
-    minWidth: '14px',
-    minHeight: '14px',
-    maxWidth: '14px',
-    maxHeight: '14px',
+    width: '16px',
+    height: '16px',
+    minWidth: '16px',
+    minHeight: '16px',
+    maxWidth: '16px',
+    maxHeight: '16px',
   };
   
   switch (status) {
@@ -33,8 +34,8 @@ function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }
         <svg
           data-testid="status-sent"
           className="flex-shrink-0"
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 16 16"
           fill="none"
           style={iconStyle}
@@ -53,14 +54,21 @@ function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }
         <svg
           data-testid="status-delivered"
           className="flex-shrink-0"
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 16 16"
           fill="none"
           style={iconStyle}
         >
           <path
-            d="M2 8l3 3 5-6M6 8l3 3 5-6"
+            d="M1.5 8l3 3 5-6"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M5.5 8l3 3 5-6"
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
@@ -73,14 +81,21 @@ function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }
         <svg
           data-testid="status-read"
           className="flex-shrink-0"
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 16 16"
           fill="none"
           style={iconStyle}
         >
           <path
-            d="M2 8l3 3 5-6M6 8l3 3 5-6"
+            d="M1.5 8l3 3 5-6"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M5.5 8l3 3 5-6"
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
@@ -110,15 +125,15 @@ function ReplyPreview({
   return (
     <div
       data-testid="reply-preview"
-      className="flex items-stretch mb-1.5 rounded overflow-hidden"
+      className="flex items-stretch mb-1 rounded overflow-hidden"
     >
       <div
-        className="w-0.5 flex-shrink-0"
-        style={{ backgroundColor: hexToCSS(barColor) }}
+        className="flex-shrink-0"
+        style={{ backgroundColor: hexToCSS(barColor), width: '2px' }}
       />
       <div className="pl-2 py-0.5 min-w-0">
         <div
-          className="text-xs font-medium truncate"
+          className="text-xs font-semibold truncate"
           style={{ color: hexToCSS(barColor) }}
         >
           {senderName}
@@ -137,8 +152,10 @@ function ReplyPreview({
 /**
  * ChatBubble component
  * 
- * Renders a single message bubble styled according to the provided theme.
- * Supports incoming and outgoing messages, replies, timestamps, and read indicators.
+ * Renders a single message bubble styled according to the Telegram Desktop format.
+ * - Timestamp floats inline at the end of the message text
+ * - Bubble has a small tail at the bottom corner
+ * - Max width is constrained to ~65% of the chat area
  */
 export function ChatBubble({
   message,
@@ -172,6 +189,9 @@ export function ChatBubble({
         ? theme.msgOutReplyBarColor
         : theme.msgInReplyBarColor,
       statusColor: theme.historyOutIconFg,
+      shadowColor: isOutgoing
+        ? hexToCSS(theme.msgOutShadow)
+        : hexToCSS(theme.msgInShadow),
     };
   }, [theme, isOutgoing, isService]);
   
@@ -179,7 +199,6 @@ export function ChatBubble({
   const senderNameColor = useMemo(() => {
     if (!showSenderName || !message.senderName || isOutgoing) return null;
     
-    // Use different peer colors based on sender name hash
     const hash = message.senderName.split('').reduce(
       (acc, char) => acc + char.charCodeAt(0),
       0
@@ -213,65 +232,118 @@ export function ChatBubble({
     );
   }
   
+  // Telegram-style bubble tail using CSS
+  const tailColor = isOutgoing ? theme.msgOutBg : theme.msgInBg;
+  
   return (
     <div
       data-testid="chat-bubble"
       data-direction={message.direction}
-      className={`flex ${isOutgoing ? 'justify-end' : 'justify-start'} mb-1 ${className}`}
+      className={`flex ${isOutgoing ? 'justify-end' : 'justify-start'} mb-0.5 ${className}`}
+      style={{ padding: '1px 8px' }}
     >
       <div
-        className={`
-          relative max-w-[80%] px-3 py-1.5 rounded-lg
-          ${isOutgoing ? 'rounded-br-sm' : 'rounded-bl-sm'}
-        `}
+        className="relative"
         style={{
-          backgroundColor: styles.background,
-          color: styles.color,
+          maxWidth: '65%',
+          minWidth: '80px',
         }}
       >
-        {/* Sender name for group chats */}
-        {showSenderName && senderNameColor && !isOutgoing && (
-          <div
-            data-testid="sender-name"
-            className="text-xs font-semibold mb-0.5"
-            style={{ color: hexToCSS(senderNameColor) }}
-          >
-            {message.senderName}
-          </div>
-        )}
-        
-        {/* Reply preview */}
-        {message.replyTo && (
-          <ReplyPreview
-            senderName={message.replyTo.senderName}
-            text={message.replyTo.text}
-            barColor={styles.replyBarColor!}
-            textColor={styles.color}
-          />
-        )}
-        
-        {/* Message text */}
-        <div className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-          {message.text}
-        </div>
-        
-        {/* Timestamp and read status */}
-        <div className="flex items-center justify-end gap-1 mt-0.5" style={{ height: '16px' }}>
-          <span
-            data-testid="timestamp"
-            className="text-[10px] leading-none"
-            style={{ color: styles.dateColor }}
-          >
-            {formatTime(message.timestamp)}
-          </span>
+        {/* The bubble */}
+        <div
+          data-testid="bubble-content"
+          className="relative px-2.5 py-1.5 rounded-lg"
+          style={{
+            backgroundColor: styles.background,
+            color: styles.color,
+            borderRadius: isOutgoing 
+              ? '10px 10px 0 10px' 
+              : '10px 10px 10px 0',
+            boxShadow: '0 1px 1px rgba(0,0,0,0.08)',
+          }}
+        >
+          {/* Sender name for group chats */}
+          {showSenderName && senderNameColor && !isOutgoing && (
+            <div
+              data-testid="sender-name"
+              className="text-xs font-semibold mb-0.5"
+              style={{ color: hexToCSS(senderNameColor) }}
+            >
+              {message.senderName}
+            </div>
+          )}
           
-          {isOutgoing && message.readStatus && (
-            <ReadStatusIcon
-              status={message.readStatus}
-              color={styles.statusColor!}
+          {/* Reply preview */}
+          {message.replyTo && (
+            <ReplyPreview
+              senderName={message.replyTo.senderName}
+              text={message.replyTo.text}
+              barColor={styles.replyBarColor!}
+              textColor={styles.color}
             />
           )}
+          
+          {/* Message text with inline timestamp (Telegram style) */}
+          <div className="text-[13px] leading-[18px] whitespace-pre-wrap break-words">
+            <span>{message.text}</span>
+            {/* Invisible spacer to prevent timestamp from overlapping text */}
+            <span 
+              className="inline-block align-bottom" 
+              style={{ 
+                width: isOutgoing && message.readStatus ? '65px' : '48px', 
+                height: '1px',
+              }} 
+            />
+          </div>
+          
+          {/* Timestamp + read status - positioned at bottom-right, overlapping the spacer */}
+          <div 
+            className="flex items-center justify-end"
+            style={{ 
+              marginTop: '-14px',
+              marginBottom: '1px',
+              height: '16px',
+              gap: '3px',
+            }}
+          >
+            <span
+              data-testid="timestamp"
+              className="leading-none"
+              style={{ 
+                color: styles.dateColor,
+                fontSize: '11px',
+              }}
+            >
+              {formatTime(message.timestamp)}
+            </span>
+            
+            {isOutgoing && message.readStatus && (
+              <ReadStatusIcon
+                status={message.readStatus}
+                color={styles.statusColor!}
+              />
+            )}
+          </div>
         </div>
+        
+        {/* Bubble tail - small triangle at bottom corner */}
+        <div 
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            [isOutgoing ? 'right' : 'left']: '-6px',
+            width: 0,
+            height: 0,
+            borderStyle: 'solid',
+            ...(isOutgoing ? {
+              borderWidth: '0 0 8px 8px',
+              borderColor: `transparent transparent transparent ${hexToCSS(tailColor)}`,
+            } : {
+              borderWidth: '0 8px 8px 0',
+              borderColor: `transparent ${hexToCSS(tailColor)} transparent transparent`,
+            }),
+          }}
+        />
       </div>
     </div>
   );

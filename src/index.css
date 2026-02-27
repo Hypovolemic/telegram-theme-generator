@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Gradient title text - reliable cross-browser approach */
+.gradient-title {
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
 /* Ensure SVG icons don't expand beyond their intended size */
 svg {
   display: inline-block;

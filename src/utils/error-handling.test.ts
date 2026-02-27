@@ -125,7 +125,7 @@ describe('getUserFriendlyMessage', () => {
   it('should return message for known error codes', () => {
     expect(getUserFriendlyMessage(ErrorCode.FILE_TOO_LARGE)).toContain('too large');
     expect(getUserFriendlyMessage(ErrorCode.FILE_INVALID_TYPE)).toContain('not supported');
-    expect(getUserFriendlyMessage(ErrorCode.COLOR_EXTRACTION_FAILED)).toContain('extract colors');
+    expect(getUserFriendlyMessage(ErrorCode.COLOR_EXTRACTION_FAILED)).toContain('extract colours');
   });
 
   it('should return generic message for unknown code', () => {

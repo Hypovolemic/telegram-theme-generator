@@ -376,7 +376,7 @@ export function ImageUploader({
               )}
             </p>
             <p className="mt-1 text-xs text-gray-500">
-              {ACCEPTED_EXTENSIONS.join(', ').toUpperCase()} up to {formatFileSize(maxFileSize)}
+              .JPG, .JPEG, .PNG, .WEBP up to {formatFileSize(maxFileSize)}
             </p>
           </div>
         )}

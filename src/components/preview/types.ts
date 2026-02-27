@@ -170,6 +170,7 @@ export interface MessageListProps {
   theme: PreviewThemeColors;
   isGroupChat?: boolean;
   className?: string;
+  wallpaperUrl?: string;
 }
 
 /**
@@ -180,6 +181,7 @@ export interface ThemePreviewProps {
   className?: string;
   showSidebar?: boolean;
   responsive?: boolean;
+  wallpaperUrl?: string;
 }
 
 /**

@@ -106,7 +106,7 @@ export function PrivacyPolicy({ onClose }: PrivacyPolicyProps) {
             <h3 className="text-lg font-semibold text-gray-800 mb-3">Technical Details</h3>
             <p className="text-gray-600 text-sm leading-relaxed mb-3">
               This application is built with React and runs entirely in your browser. 
-              The color extraction algorithm uses the HTML5 Canvas API to read image pixel data, 
+              The colour extraction algorithm uses the HTML5 Canvas API to read image pixel data, 
               which is a standard browser feature that doesn't require any server communication.
             </p>
             <p className="text-gray-600 text-sm leading-relaxed">
