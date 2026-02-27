@@ -14,6 +14,16 @@ import {
 } from './components';
 import { useMemo, useCallback, useState, createContext, useContext } from 'react';
 
+// Theme colors matching Telegram samples
+const THEME_COLORS = {
+  teal: '#4fa8a8',       // Section headings (Global settings, Events, etc.)
+  coral: '#c0675c',      // Accent text (sender names like 'rick astley')
+  darkGrey: '#1e1e1e',   // Main text
+  mediumGrey: '#f0f0f0', // Card backgrounds
+  lightGrey: '#f7f7f7',  // Page background
+  borderGrey: '#e5e5e5', // Borders
+} as const;
+
 // Privacy Modal Context
 const PrivacyModalContext = createContext<{ openPrivacyModal: () => void } | null>(null);
 
@@ -25,6 +35,46 @@ function usePrivacyModal() {
   return context;
 }
 
+
+/**
+ * Sample Images Component - showcases Telegram theme examples
+ * Place your sample images in /public/ folder as sample-chat.png and sample-settings.png
+ */
+function SampleImages() {
+  return (
+    <div className="mb-8">
+      <h2 className="text-center text-lg font-semibold mb-4" style={{ color: THEME_COLORS.coral }}>
+        See What You Can Create
+      </h2>
+      <div className="flex justify-center items-center gap-6 max-w-3xl mx-auto px-4">
+        <div className="rounded-xl overflow-hidden shadow-lg border" style={{ borderColor: THEME_COLORS.borderGrey, width: '340px', flexShrink: 0 }}>
+          <img
+            src="/sample-chat.png"
+            alt="Sample Telegram chat with custom theme"
+            className="w-full h-auto"
+            style={{ maxHeight: '420px', objectFit: 'cover', objectPosition: 'top' }}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+          <div className="p-2 text-center text-xs" style={{ backgroundColor: THEME_COLORS.mediumGrey, color: THEME_COLORS.darkGrey }}>
+            Custom Chat Theme
+          </div>
+        </div>
+        <div className="rounded-xl overflow-hidden shadow-lg border" style={{ borderColor: THEME_COLORS.borderGrey, width: '280px', flexShrink: 0 }}>
+          <img
+            src="/sample-settings.png"
+            alt="Sample Telegram settings with custom theme"
+            className="w-full h-auto"
+            style={{ maxHeight: '420px', objectFit: 'cover', objectPosition: 'top' }}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+          <div className="p-2 text-center text-xs" style={{ backgroundColor: THEME_COLORS.mediumGrey, color: THEME_COLORS.darkGrey }}>
+            Themed Settings Panel
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Color Palette Display Component
@@ -48,37 +98,7 @@ function ColorPalette() {
   );
 }
 
-/**
- * Theme Mode Toggle Component
- */
-function ThemeModeToggle() {
-  const { themeMode, setThemeMode, isProcessing } = useThemeGenerator();
-  
-  return (
-    <div className="flex items-center gap-2">
-      <span className={`text-xs sm:text-sm ${themeMode === 'light' ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
-        ☀️
-      </span>
-      <button
-        onClick={() => setThemeMode(themeMode === 'light' ? 'dark' : 'light')}
-        disabled={isProcessing}
-        className={`relative w-11 h-6 sm:w-14 sm:h-7 rounded-full transition-colors ${
-          themeMode === 'dark' ? 'bg-blue-600' : 'bg-gray-300'
-        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-        aria-label={`Switch to ${themeMode === 'light' ? 'dark' : 'light'} mode`}
-      >
-        <span
-          className={`absolute top-0.5 sm:top-1 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-            themeMode === 'dark' ? 'translate-x-5 sm:translate-x-8' : 'translate-x-0.5 sm:translate-x-1'
-          }`}
-        />
-      </button>
-      <span className={`text-xs sm:text-sm ${themeMode === 'dark' ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
-        🌙
-      </span>
-    </div>
-  );
-}
+// ThemeModeToggle removed: Telegram themes do not support dark mode switching
 
 /**
  * Processing Status Component
@@ -241,10 +261,10 @@ function MainContent() {
     return (
       <div className="max-w-lg mx-auto space-y-6">
         <div className="text-center">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+          <h2 className="text-lg sm:text-xl font-semibold mb-2" style={{ color: THEME_COLORS.teal }}>
             Upload Your Image
           </h2>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm mb-4" style={{ color: THEME_COLORS.darkGrey }}>
             Drop any wallpaper, photo, or artwork to create a matching Telegram theme
           </p>
         </div>
@@ -299,16 +319,16 @@ function MainContent() {
       <div className="space-y-6">
         {/* Section Header */}
         <div className="text-center">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-1">
+          <h2 className="text-lg sm:text-xl font-semibold mb-1" style={{ color: THEME_COLORS.teal }}>
             Your Theme is Ready!
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm" style={{ color: THEME_COLORS.darkGrey }}>
             Preview below and download when you're happy
           </p>
         </div>
         
         {/* Image and Colors */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center p-4 bg-gray-50 rounded-xl">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center p-4 rounded-xl" style={{ backgroundColor: THEME_COLORS.mediumGrey }}>
           {imagePreviewUrl && (
             <div className="flex-shrink-0">
               <img
@@ -319,7 +339,7 @@ function MainContent() {
             </div>
           )}
           <div className="text-center sm:text-left">
-            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+            <h3 className="text-xs font-medium uppercase tracking-wide mb-2" style={{ color: THEME_COLORS.coral }}>
               Extracted Colors
             </h3>
             <ColorPalette />
@@ -327,12 +347,7 @@ function MainContent() {
         </div>
         
         {/* Theme Mode Toggle */}
-        <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
-            <span className="text-xs text-gray-500">Theme Mode:</span>
-            <ThemeModeToggle />
-          </div>
-        </div>
+        {/* Theme Mode controls removed: Telegram themes do not support dark mode switching */}
         
         {/* Theme Preview */}
         <div className="max-w-2xl mx-auto">
@@ -390,10 +405,13 @@ function MainContent() {
  */
 function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string }) {
   return (
-    <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white/50 backdrop-blur-sm">
+    <div 
+      className="flex flex-col items-center text-center p-4 rounded-xl shadow-sm border"
+      style={{ backgroundColor: THEME_COLORS.mediumGrey, borderColor: THEME_COLORS.borderGrey }}
+    >
       <span className="text-3xl mb-2">{icon}</span>
-      <h3 className="font-semibold text-gray-800 mb-1">{title}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
+      <h3 className="font-semibold mb-1" style={{ color: THEME_COLORS.teal }}>{title}</h3>
+      <p className="text-sm" style={{ color: THEME_COLORS.darkGrey }}>{description}</p>
     </div>
   );
 }
@@ -525,13 +543,16 @@ function AppContent() {
   
   return (
     <PrivacyModalContext.Provider value={{ openPrivacyModal }}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen" style={{ backgroundColor: THEME_COLORS.lightGrey }}>
         {/* Top gradient accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+        <div className="absolute top-0 left-0 right-0 h-1" style={{ background: `linear-gradient(to right, ${THEME_COLORS.teal}, ${THEME_COLORS.coral})` }} />
         
         <div className="relative py-6 px-4 sm:py-8 md:py-12">
           <div className="max-w-4xl mx-auto">
             <AppHeader />
+            
+            {/* Sample images - only on upload stage */}
+            {stage === 'upload' && <SampleImages />}
             
             {/* Hero section - only on upload stage */}
             {stage === 'upload' && <HeroSection />}
@@ -540,7 +561,10 @@ function AppContent() {
             <ProcessingStatus />
             
             {/* Main content card */}
-            <main className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 md:p-8">
+            <main 
+              className="rounded-2xl sm:rounded-3xl shadow-xl border p-4 sm:p-6 md:p-8"
+              style={{ backgroundColor: '#ffffff', borderColor: THEME_COLORS.borderGrey }}
+            >
               <MainContent />
             </main>
             

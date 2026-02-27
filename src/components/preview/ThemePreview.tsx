@@ -27,10 +27,6 @@ const sampleMessages: Message[] = [
     direction: 'incoming',
     timestamp: new Date(Date.now() - 3400000),
     senderName: 'Alex',
-    replyTo: {
-      senderName: 'You',
-      text: 'Wow, it looks amazing! Love the colours',
-    },
   },
   {
     id: '4',
