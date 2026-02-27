@@ -17,14 +17,24 @@ function formatTime(date: Date): string {
  * Read status indicator icons
  */
 function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }) {
-  const iconStyle = { color: hexToCSS(color) };
+  const iconStyle = { 
+    color: hexToCSS(color),
+    width: '14px',
+    height: '14px',
+    minWidth: '14px',
+    minHeight: '14px',
+    maxWidth: '14px',
+    maxHeight: '14px',
+  };
   
   switch (status) {
     case 'sent':
       return (
         <svg
           data-testid="status-sent"
-          className="w-4 h-4 flex-shrink-0"
+          className="flex-shrink-0"
+          width="14"
+          height="14"
           viewBox="0 0 16 16"
           fill="none"
           style={iconStyle}
@@ -42,7 +52,9 @@ function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }
       return (
         <svg
           data-testid="status-delivered"
-          className="w-4 h-4 flex-shrink-0"
+          className="flex-shrink-0"
+          width="14"
+          height="14"
           viewBox="0 0 16 16"
           fill="none"
           style={iconStyle}
@@ -60,7 +72,9 @@ function ReadStatusIcon({ status, color }: { status: ReadStatus; color: string }
       return (
         <svg
           data-testid="status-read"
-          className="w-4 h-4 flex-shrink-0"
+          className="flex-shrink-0"
+          width="14"
+          height="14"
           viewBox="0 0 16 16"
           fill="none"
           style={iconStyle}
@@ -242,7 +256,7 @@ export function ChatBubble({
         </div>
         
         {/* Timestamp and read status */}
-        <div className="flex items-center justify-end gap-1 mt-0.5 -mb-0.5">
+        <div className="flex items-center justify-end gap-1 mt-0.5" style={{ height: '16px' }}>
           <span
             data-testid="timestamp"
             className="text-[10px] leading-none"
