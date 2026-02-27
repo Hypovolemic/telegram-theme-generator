@@ -9,9 +9,21 @@ import {
   ToastProvider,
   useToast,
   Spinner,
+  PrivacyPolicy,
   type ProcessingStep,
 } from './components';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState, createContext, useContext } from 'react';
+
+// Privacy Modal Context
+const PrivacyModalContext = createContext<{ openPrivacyModal: () => void } | null>(null);
+
+function usePrivacyModal() {
+  const context = useContext(PrivacyModalContext);
+  if (!context) {
+    throw new Error('usePrivacyModal must be used within PrivacyModalContext');
+  }
+  return context;
+}
 
 
 /**
@@ -118,6 +130,63 @@ function ProcessingStatus() {
 }
 
 /**
+ * Privacy Notice Component
+ * Displays privacy information near the upload area with tooltip explanation
+ */
+function PrivacyNotice() {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const { openPrivacyModal } = usePrivacyModal();
+  
+  return (
+    <div className="relative flex flex-col items-center gap-2">
+      <div 
+        className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg cursor-help"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onFocus={() => setShowTooltip(true)}
+        onBlur={() => setShowTooltip(false)}
+        tabIndex={0}
+        role="button"
+        aria-describedby="privacy-tooltip"
+      >
+        <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+        </svg>
+        <span className="text-sm text-green-700 font-medium">
+          100% Private – Images never leave your device
+        </span>
+        <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+        </svg>
+      </div>
+      
+      {/* Tooltip */}
+      {showTooltip && (
+        <div 
+          id="privacy-tooltip"
+          role="tooltip"
+          className="absolute top-full mt-2 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-10"
+        >
+          <p className="font-medium mb-1">Client-Side Processing</p>
+          <p className="text-gray-300 leading-relaxed">
+            All image analysis and theme generation happens directly in your browser using JavaScript. 
+            Your images are never uploaded to any server – they stay completely on your device.
+          </p>
+          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900 rotate-45" />
+        </div>
+      )}
+      
+      <button 
+        onClick={openPrivacyModal}
+        className="text-xs text-green-600 hover:text-green-700 hover:underline transition-colors"
+      >
+        Learn more about our privacy commitment →
+      </button>
+    </div>
+  );
+}
+
+/**
  * Main Content Component
  */
 function MainContent() {
@@ -189,6 +258,9 @@ function MainContent() {
           <span className="text-gray-300">•</span>
           <span>Max 10MB</span>
         </div>
+        
+        {/* Privacy Notice */}
+        <PrivacyNotice />
       </div>
     );
   }
@@ -436,31 +508,40 @@ function AppFooter() {
  */
 function AppContent() {
   const { stage } = useThemeGenerator();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  
+  const openPrivacyModal = useCallback(() => setShowPrivacyModal(true), []);
+  const closePrivacyModal = useCallback(() => setShowPrivacyModal(false), []);
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Top gradient accent */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
-      
-      <div className="relative py-6 px-4 sm:py-8 md:py-12">
-        <div className="max-w-4xl mx-auto">
-          <AppHeader />
-          
-          {/* Hero section - only on upload stage */}
-          {stage === 'upload' && <HeroSection />}
-          
-          {/* Processing status - shown during processing */}
-          <ProcessingStatus />
-          
-          {/* Main content card */}
-          <main className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 md:p-8">
-            <MainContent />
-          </main>
-          
-          <AppFooter />
+    <PrivacyModalContext.Provider value={{ openPrivacyModal }}>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        {/* Top gradient accent */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+        
+        <div className="relative py-6 px-4 sm:py-8 md:py-12">
+          <div className="max-w-4xl mx-auto">
+            <AppHeader />
+            
+            {/* Hero section - only on upload stage */}
+            {stage === 'upload' && <HeroSection />}
+            
+            {/* Processing status - shown during processing */}
+            <ProcessingStatus />
+            
+            {/* Main content card */}
+            <main className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 md:p-8">
+              <MainContent />
+            </main>
+            
+            <AppFooter />
+          </div>
         </div>
+        
+        {/* Privacy Policy Modal */}
+        {showPrivacyModal && <PrivacyPolicy onClose={closePrivacyModal} />}
       </div>
-    </div>
+    </PrivacyModalContext.Provider>
   );
 }
 
