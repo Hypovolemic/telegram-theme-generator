@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, type DragEvent, type ChangeEvent } from 'react';
 import {
   ACCEPTED_IMAGE_TYPES,
-  ACCEPTED_EXTENSIONS,
   MAX_FILE_SIZE,
   ERROR_MESSAGES,
   type ImageUploaderProps,
